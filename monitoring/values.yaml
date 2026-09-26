@@ -1,0 +1,9 @@
+# kube-prometheus-stack values for DSYS601 observability lab
+# Installed with: ./monitoring/setup-monitoring.sh
+
+prometheus:
+  prometheusSpec:
+    retention: 2d
+
+grafana:
+  adminPassword: admin123
