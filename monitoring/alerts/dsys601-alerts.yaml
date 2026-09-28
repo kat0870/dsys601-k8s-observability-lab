@@ -37,3 +37,22 @@ spec:
           annotations:
             summary: "Container {{ $labels.container }} in pod {{ $labels.pod }} is near its memory limit"
             description: "Container {{ $labels.container }} in {{ $labels.namespace }}/{{ $labels.pod }} has used more than 90% of its memory limit for 10 minutes (currently {{ $value | humanizePercentage }})."
+        - alert: DSYS601PodNotReady
+          expr: |
+            (
+              max by (namespace, pod) (
+                kube_pod_status_ready{namespace="demo-app", condition="true"}
+              ) == 0
+            )
+            and on (namespace, pod)
+            (
+              max by (namespace, pod) (
+                kube_pod_status_phase{namespace="demo-app", phase=~"Pending|Running|Unknown"}
+              ) == 1
+            )
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ $labels.pod }} has been not-ready for 5 minutes"
+            description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has not passed its readiness check for more than 5 minutes, so it is not receiving traffic."
