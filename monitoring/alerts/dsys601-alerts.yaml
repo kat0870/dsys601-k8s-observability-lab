@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: dsys601-workload-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: dsys601-workload.rules
+      rules:
+        - alert: DSYS601PodCrashLooping
+          expr: |
+            max_over_time(
+              kube_pod_container_status_waiting_reason{namespace="demo-app", reason="CrashLoopBackOff"}[5m]
+            ) >= 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Container {{ $labels.container }} in pod {{ $labels.pod }} is crash looping"
+            description: "Container {{ $labels.container }} in {{ $labels.namespace }}/{{ $labels.pod }} has been in CrashLoopBackOff repeatedly over the last 5 minutes."
