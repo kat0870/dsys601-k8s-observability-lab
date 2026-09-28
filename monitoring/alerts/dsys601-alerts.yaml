@@ -56,3 +56,14 @@ spec:
           annotations:
             summary: "Pod {{ $labels.pod }} has been not-ready for 5 minutes"
             description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has not passed its readiness check for more than 5 minutes, so it is not receiving traffic."
+        - alert: DSYS601NodeUnderPressure
+          expr: |
+            max by (node, condition) (
+              kube_node_status_condition{condition=~"MemoryPressure|DiskPressure|PIDPressure", status="true"}
+            ) == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node {{ $labels.node }} reports {{ $labels.condition }}"
+            description: "The kubelet on {{ $labels.node }} has reported {{ $labels.condition }} for more than 10 minutes and may start evicting pods. In this Kind lab all nodes share one VM, so this usually means the whole host is short of this resource."
