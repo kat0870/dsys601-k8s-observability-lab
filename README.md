@@ -67,6 +67,66 @@ kubectl port-forward -n demo-app svc/frontend 8081:80    # then curl localhost:8
 kubectl port-forward -n demo-app svc/api 8082:8080        # then curl localhost:8082/get
 ```
 
+## Installing the monitoring stack
+
+```bash
+./monitoring/setup-monitoring.sh
+kubectl wait --for=condition=Ready pods --all -n monitoring --timeout=300s
+```
+
+This installs the kube-prometheus-stack Helm chart (pinned to version 91.5.3,
+settings in `monitoring/values.yaml`) into the `monitoring` namespace, then loads:
+
+- the Grafana dashboard "DSYS601 Workload Health" from `monitoring/dashboards/`
+  (a ConfigMap labelled `grafana_dashboard=1`), and
+- the alerting rules from `monitoring/alerts/` (a PrometheusRule labelled
+  `release=kube-prometheus-stack`, which is the label Prometheus selects rules by).
+
+The script uses `helm install`, so run it on a fresh cluster.
+
+Access (run each command in its own terminal tab and leave it open):
+
+```bash
+kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80        # http://localhost:3000
+kubectl port-forward -n monitoring svc/kube-prometheus-stack-prometheus 9090:9090   # http://localhost:9090
+```
+
+The Grafana login is set in `monitoring/values.yaml`.
+
+### Alerting rules
+
+All rules are in `monitoring/alerts/dsys601-alerts.yaml` (rule group
+`dsys601-workload.rules`). The workload rules only watch the `demo-app` namespace.
+
+| Alert | Fires when | For | Severity |
+|---|---|---|---|
+| `DSYS601PodCrashLooping` | A container has been in CrashLoopBackOff at any point in the last 5 minutes | 5m | critical |
+| `DSYS601ContainerMemoryNearLimit` | A container's working-set memory is above 90% of its memory limit | 10m | warning |
+| `DSYS601PodNotReady` | A pod that should be running (Pending, Running or Unknown) is not Ready | 5m | warning |
+| `DSYS601NodeUnderPressure` | A node's kubelet reports MemoryPressure, DiskPressure or PIDPressure | 10m | warning |
+
+Design notes:
+
+- The `for` times are long enough that normal startups, rollouts and short
+  spikes do not fire an alert. On the healthy demo app all four rules are inactive.
+- The node rule uses the kubelet's pressure conditions (via kube-state-metrics)
+  instead of node-exporter. Kind nodes are Docker containers on one VM, so
+  node-exporter reports the same host resources for every node. For the same
+  reason, a real shortage on the VM makes all three nodes report pressure together.
+- The kubelet keeps a pressure condition on for about 5 minutes after the pressure
+  ends, so the node rule waits 10 minutes to ignore short spikes.
+- The chart's built-in rules (for example `KubePodCrashLooping`, `KubePodNotReady`
+  and `KubeNodePressure`) are still enabled. The `DSYS601` rules are scoped to this
+  lab, with shorter, documented timings.
+
+Check that the rules are loaded (rule changes take about a minute to appear):
+
+```bash
+curl -s http://localhost:9090/api/v1/rules | grep -o 'DSYS601[A-Za-z]*' | sort -u
+```
+
+This should list all four `DSYS601` alerts.
+
 ## Tearing down
 
 ```bash
@@ -82,4 +142,11 @@ cluster/
   teardown-cluster.sh     # deletes the cluster
 app/
   demo-app.yaml           # frontend, API and datastore Deployments/Services
+monitoring/
+  setup-monitoring.sh      # installs kube-prometheus-stack 91.5.3, the dashboard and the alert rules
+  values.yaml              # Helm chart settings
+  dashboards/
+    dsys601-workload-health.json   # Grafana dashboard, loaded via a labelled ConfigMap
+  alerts/
+    dsys601-alerts.yaml    # PrometheusRule with the four DSYS601 alerts
 ```
