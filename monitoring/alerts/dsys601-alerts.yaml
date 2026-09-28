@@ -20,3 +20,20 @@ spec:
           annotations:
             summary: "Container {{ $labels.container }} in pod {{ $labels.pod }} is crash looping"
             description: "Container {{ $labels.container }} in {{ $labels.namespace }}/{{ $labels.pod }} has been in CrashLoopBackOff repeatedly over the last 5 minutes."
+        - alert: DSYS601ContainerMemoryNearLimit
+          expr: |
+            (
+              max by (namespace, pod, container) (
+                container_memory_working_set_bytes{namespace="demo-app", container!="", container!="POD"}
+              )
+              /
+              max by (namespace, pod, container) (
+                kube_pod_container_resource_limits{namespace="demo-app", resource="memory"}
+              )
+            ) > 0.9
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Container {{ $labels.container }} in pod {{ $labels.pod }} is near its memory limit"
+            description: "Container {{ $labels.container }} in {{ $labels.namespace }}/{{ $labels.pod }} has used more than 90% of its memory limit for 10 minutes (currently {{ $value | humanizePercentage }})."
