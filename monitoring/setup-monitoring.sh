@@ -18,3 +18,7 @@ kubectl create configmap dsys601-workload-health \
   --dry-run=client -o yaml | kubectl apply -f -
 kubectl label configmap dsys601-workload-health \
   --namespace monitoring grafana_dashboard=1 --overwrite
+
+# Load the DSYS601 alerting rules (PrometheusRule objects). The Prometheus operator
+# picks them up because they carry the label release=kube-prometheus-stack.
+kubectl apply -f "$SCRIPT_DIR/alerts/"
