@@ -1,0 +1,29 @@
+# Task 9 failure-injection test: a pod that fills 92Mi of its 100Mi memory limit
+# (about 92%) and holds it. Expected alert: DSYS601ContainerMemoryNearLimit.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-memory
+  namespace: demo-app
+  labels:
+    purpose: task9-failure-test
+spec:
+  containers:
+    - name: memory-hog
+      image: busybox:1.36.1
+      command: ["sh", "-c", "dd if=/dev/zero of=/fill/data bs=1M count=92 && echo 'Task 9: holding 92Mi' && sleep 3600"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 100Mi
+        limits:
+          cpu: 100m
+          memory: 100Mi
+      volumeMounts:
+        - name: fill
+          mountPath: /fill
+  volumes:
+    - name: fill
+      emptyDir:
+        medium: Memory
+        sizeLimit: 96Mi
