@@ -1,0 +1,21 @@
+# Task 9 failure-injection test: a pod that exits with an error every time,
+# so Kubernetes puts it into CrashLoopBackOff. Expected alert: DSYS601PodCrashLooping.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-crashloop
+  namespace: demo-app
+  labels:
+    purpose: task9-failure-test
+spec:
+  containers:
+    - name: crasher
+      image: busybox:1.36.1
+      command: ["sh", "-c", "echo 'Task 9: simulated crash'; sleep 5; exit 1"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
