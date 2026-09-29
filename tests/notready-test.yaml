@@ -1,0 +1,25 @@
+# Task 9 failure-injection test: a pod that runs normally but never passes its
+# readiness check, so it is never Ready. Expected alert: DSYS601PodNotReady.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-notready
+  namespace: demo-app
+  labels:
+    purpose: task9-failure-test
+spec:
+  containers:
+    - name: never-ready
+      image: busybox:1.36.1
+      command: ["sh", "-c", "echo 'Task 9: running but never ready'; sleep 3600"]
+      readinessProbe:
+        exec:
+          command: ["cat", "/tmp/ready"]
+        periodSeconds: 5
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
