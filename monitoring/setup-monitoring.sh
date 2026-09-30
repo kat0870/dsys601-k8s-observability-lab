@@ -4,6 +4,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+source "$REPO_ROOT/versions.env"
 
 # Grafana admin password comes from .env (not committed to git). See .env.example.
 if [ -f "$REPO_ROOT/.env" ]; then
@@ -19,7 +20,7 @@ kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f 
 # upgrade --install works for both first install and re-runs; chart version is pinned.
 helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
-  --version 91.5.3 \
+  --version "$KUBE_PROMETHEUS_STACK_CHART_VERSION" \
   --values "$SCRIPT_DIR/values.yaml" \
   --set grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD"
 
