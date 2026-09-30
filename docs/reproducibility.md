@@ -49,8 +49,9 @@ attempt failed on an empty `grafana:` key in `values.yaml`; this was fixed in co
 
 ## Known gaps and recommendations
 
-- **Kind is an alpha build** (`v0.34.0-alpha`). Recommend moving to a stable Kind release and
-  re-verifying. Not changed yet so the tested baseline stays intact.
+- **Kind moved to a stable release** (v0.33.0, 30 Sep 2026). It uses the same pinned node
+  image digest, and a full reset passed all checks. The old alpha build is kept as
+  `/usr/local/bin/kind-alpha-backup` on the original VM.
 - **Image digests were captured on 30 Sep 2026.** Floating tags (`redis:7.4-alpine`,
   `nginx:1.27-alpine`) may have resolved to newer patch builds than those used in Tasks 5-9.
   The rebuild test verified the pinned builds work.
