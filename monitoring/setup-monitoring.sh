@@ -1,15 +1,27 @@
 #!/bin/bash
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Installs the DSYS601 monitoring stack (kube-prometheus-stack) from pinned, version-controlled config.
+set -euo pipefail
 
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Grafana admin password comes from .env (not committed to git). See .env.example.
+if [ -f "$REPO_ROOT/.env" ]; then
+  source "$REPO_ROOT/.env"
+fi
+: "${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env (copy .env.example to .env)}"
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts --force-update
 helm repo update
 
 kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
 
-helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+# upgrade --install works for both first install and re-runs; chart version is pinned.
+helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
   --version 91.5.3 \
-  --values "$SCRIPT_DIR/values.yaml"
+  --values "$SCRIPT_DIR/values.yaml" \
+  --set grafana.adminPassword="$GRAFANA_ADMIN_PASSWORD"
 
 # Load the Grafana dashboard automatically (picked up by Grafana's dashboard sidecar)
 kubectl create configmap dsys601-workload-health \
