@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
     - name: memory-hog
-      image: busybox:1.36.1
+      image: busybox:1.36.1@sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662
       command: ["sh", "-c", "dd if=/dev/zero of=/fill/data bs=1M count=92 && echo 'Task 9: holding 92Mi' && sleep 3600"]
       resources:
         requests:

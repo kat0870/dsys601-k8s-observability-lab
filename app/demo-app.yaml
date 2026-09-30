@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:7.4-alpine
+          image: redis:7.4-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
           ports:
             - containerPort: 6379
           resources:
@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: mccutchen/go-httpbin:v2.15.0
+          image: mccutchen/go-httpbin:v2.15.0@sha256:24528cf5229d0b70065ac27e6c9e4d96f5452a84a3ce4433e56573c18d96827a
           ports:
             - containerPort: 8080
           resources:
@@ -118,7 +118,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: nginx:1.27-alpine
+          image: nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
           ports:
             - containerPort: 80
           resources:
