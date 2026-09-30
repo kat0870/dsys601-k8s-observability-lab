@@ -133,23 +133,23 @@ This should list all four `DSYS601` alerts.
 ./cluster/teardown-cluster.sh
 ```
 
+## Quick start
+
+See [docs/handover.md](docs/handover.md) to set up the lab from a blank Ubuntu machine.
+
 ## Repository structure
 
-```
-cluster/
-  kind-config.yaml       # 3-node cluster definition (pinned image versions)
-  setup-cluster.sh        # creates the cluster (run from repo root)
-  teardown-cluster.sh     # deletes the cluster
-app/
-  demo-app.yaml           # frontend, API and datastore Deployments/Services
-monitoring/
-  setup-monitoring.sh      # installs kube-prometheus-stack 91.5.3, the dashboard and the alert rules
-  values.yaml              # Helm chart settings
-  dashboards/
-    dsys601-workload-health.json   # Grafana dashboard, loaded via a labelled ConfigMap
-  alerts/
-    dsys601-alerts.yaml    # PrometheusRule with the four DSYS601 alerts
-```
+    cluster/          Kind cluster config, setup and teardown scripts
+    app/              Demo app (frontend, API, Redis)
+    monitoring/       Helm values, setup script, dashboard JSON, alert rules
+    tests/            Failure-injection tests (Task 9)
+    task11/           Storage tests (Task 11)
+    docs/             Handover guide, reproducibility notes, reset procedure
+    install-tools.sh  Installs docker, kubectl, helm and kind at pinned versions
+    reset-lab.sh      Wipes and rebuilds the lab
+    verify-lab.sh     Health check (11 checks)
+    versions.env      Pinned tool and chart versions
+    .env.example      Template for the Grafana password (.env is not in git)
 
 ## Rebuilding the lab
 

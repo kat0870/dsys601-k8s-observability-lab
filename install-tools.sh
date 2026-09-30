@@ -61,5 +61,21 @@ else
   sudo install -m 0755 kind /usr/local/bin/kind
 fi
 
+# cgroup delegation (Kind needs this on some Ubuntu VMs; see README "Known issue")
+ctrl=" $(cat /sys/fs/cgroup/user.slice/cgroup.subtree_control 2> /dev/null || true) "
+missing=""
+for c in cpu cpuset io memory pids; do
+  case "$ctrl" in *" $c "*) ;; *) missing="$missing $c" ;; esac
+done
+if [ -z "$missing" ]; then
+  echo "OK    cgroup delegation already set"
+else
+  echo "Setting cgroup delegation (missing:$missing) ..."
+  sudo mkdir -p /etc/systemd/system/user@.service.d
+  printf '[Service]\nDelegate=cpu cpuset io memory pids\n' | sudo tee /etc/systemd/system/user@.service.d/delegate.conf > /dev/null
+  sudo systemctl daemon-reload
+  echo "NOTE: REBOOT this machine before running reset-lab.sh."
+fi
+
 echo "-----"
 echo "Tools ready. Next: cp .env.example .env (set the password), then ./reset-lab.sh"
