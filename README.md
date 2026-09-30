@@ -154,3 +154,7 @@ monitoring/
 ## Rebuilding the lab
 
 See [docs/reproducibility.md](docs/reproducibility.md) for what is pinned, how to rebuild from scratch, and how to upgrade versions safely.
+
+## Resetting the lab between cohorts
+
+See [docs/teardown-reset.md](docs/teardown-reset.md). In short: run `./reset-lab.sh` and check it ends with `LAB READY`.
