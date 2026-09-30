@@ -5,13 +5,36 @@ demo app, and Prometheus, Grafana and Alertmanager with the DSYS601 dashboard an
 
 ## Host requirements
 
-| Item | Minimum | Tested on |
-|---|---|---|
-| OS | Ubuntu 22.04 LTS, amd64 | Ubuntu 22.04.5 |
-| CPU | 4 cores | 4 cores |
-| Memory | 8 GB | 10 GB (lab uses about 3 GB) |
-| Disk | 40 GB | 20 GB (too small: only 3 GB left free) |
-| Internet | Needed for setup and resets (downloads several GB) | |
+| Item | Minimum | Dev VM | Fresh college VM (30 Sep 2026) |
+|---|---|---|---|
+| OS | Ubuntu 22.04 LTS, amd64 | Ubuntu 22.04.5 | Ubuntu 22.04.1 (college base image) |
+| CPU | 4 cores | 4 cores | 4 cores |
+| Memory | 8 GB | 10 GB | 8 GB (lab uses about 3 GB) |
+| Disk | 40 GB | 20 GB (too small: only 3 GB left free) | 20 GB system + 40 GB for `/var/lib/docker` |
+| Internet | Needed for setup and resets (downloads several GB) | | |
+
+The lab uses about 7 GB of disk: about 2.3 GB for Docker and the tools, and about 4.6 GB for the Kind nodes and images.
+
+## College VMs (linked clones)
+
+The college Ubuntu VMs in `P:\Clones` are linked clones with a fixed 20 GB disk.
+VMware cannot expand this disk, so add a second disk for Docker instead.
+
+1. Copy `P:\Clones\Ubuntu 224 LTS` to its own folder on D: and open the `.vmx` in VMware.
+2. With the VM off, set Memory to 8 GB and Processors to 4.
+3. Add a new hard disk: Settings > Add > Hard Disk > SCSI > 40 GB, single file.
+4. Power on and choose "I Copied It".
+5. Before running anything else, check the new disk is `sdb` (40G, no partitions) with `lsblk`, then:
+
+```bash
+sudo mkfs.ext4 -L docker-data /dev/sdb
+sudo mkdir -p /var/lib/docker
+echo 'LABEL=docker-data /var/lib/docker ext4 defaults 0 2' | sudo tee -a /etc/fstab
+sudo mount -a
+df -h /var/lib/docker    # should show about 40G
+```
+
+Then carry on with the steps below.
 
 ## Set up from a blank machine
 
@@ -41,7 +64,7 @@ The DSYS601 dashboard is called **DSYS601 Workload Health**.
 | `./verify-lab.sh` | Health check (11 PASS/FAIL checks) |
 | `./reset-lab.sh` | Wipe and rebuild the lab (see docs/teardown-reset.md) |
 | `./cluster/teardown-cluster.sh` | Delete the lab only |
-| `kubectl apply -f tests/crashloop-test.yaml` | Failure test: the crashloop alert fires after about 7 minutes |
+| `kubectl apply -f tests/crashloop-test.yaml` | Failure test: the crashloop alert fires after about 7–9 minutes. Remove it with `kubectl delete -f tests/crashloop-test.yaml`; the alert clears about 5 minutes later |
 
 ## If something goes wrong
 
