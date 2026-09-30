@@ -150,3 +150,7 @@ monitoring/
   alerts/
     dsys601-alerts.yaml    # PrometheusRule with the four DSYS601 alerts
 ```
+
+## Rebuilding the lab
+
+See [docs/reproducibility.md](docs/reproducibility.md) for what is pinned, how to rebuild from scratch, and how to upgrade versions safely.
