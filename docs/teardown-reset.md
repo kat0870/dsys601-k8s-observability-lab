@@ -38,8 +38,13 @@ Type `RESET` when asked. Takes about 2 minutes. It tears down, rebuilds from the
 | `./cluster/teardown-cluster.sh` | Delete the lab only (asks to confirm; checks nothing is left) |
 | `./verify-lab.sh` | Health check only (11 PASS/FAIL checks) |
 
+## Whole-class reset and decommission
+
+See [decommission.md](decommission.md).
+
 ## Reset record
 
 | Date | By | Repo version | Result |
 |---|---|---|---|
 | 30 Sep 2026 | Kabir Singh Thukrai | v1.0-lab-baseline-1-g66d3166 | LAB READY, 1 min 47 s |
+| 14 Oct 2026 | Kabir Singh Thukrai | 7f21cac + new values.yaml (baeddae) | LAB READY, 2 min 7 s |
