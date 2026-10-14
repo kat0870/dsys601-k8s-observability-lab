@@ -1,0 +1,13 @@
+Wed 14 Oct 2026 16:51:21 NZDT
+               total        used        free      shared  buff/cache   available
+Mem:            10Gi       4.3Gi       334Mi       201Mi       6.3Gi       6.4Gi
+Swap:          923Mi       1.0Mi       921Mi
+NAME                        CPU %     MEM USAGE / LIMIT
+dsys601-lab-control-plane   7.60%     1.169GiB / 10.96GiB
+dsys601-lab-worker2         4.45%     276.8MiB / 10.96GiB
+dsys601-lab-worker          8.17%     1.723GiB / 10.96GiB
+
+
+"alertname":"InfoInhibitor"
+"alertname":"KubeNodePressure"
+"alertname":"Watchdog"
