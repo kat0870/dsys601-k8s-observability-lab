@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment        # make a Deployment
+metadata:
+  name: web-file        # call it web-file
+  namespace: lab1       # put it in lab1
+spec:
+  replicas: 2           # keep 2 pods running
+  selector:
+    matchLabels:
+      app: web-file
+  template:
+    metadata:
+      labels:
+        app: web-file
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
