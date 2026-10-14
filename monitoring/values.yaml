@@ -6,3 +6,23 @@ prometheus:
     retention: 2d
 
 grafana: {}
+
+# Kind only exposes kube-proxy, scheduler, controller-manager and etcd
+# metrics inside the nodes, so Prometheus cannot reach them. Their targets
+# are always DOWN and their alerts (TargetDown, KubeProxyDown, etc.) fire on
+# a healthy cluster. Turned off so students only see alerts that matter.
+kubeProxy:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+
+# node-exporter had no memory request (found in Task 9).
+# Measured peak: 27.6 MiB over 2 days (Prometheus, 14 Oct 2026). Request set to 32Mi.
+prometheus-node-exporter:
+  resources:
+    requests:
+      memory: 32Mi
