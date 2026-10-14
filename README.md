@@ -6,7 +6,7 @@ built with Kind, used to develop observability labs for DSYS601.
 ## Prerequisites
 
 - Docker (tested on Docker 29.8.1)
-- Kind (tested on v0.34.0-alpha)
+- Kind (tested on v0.33.0)
 - kubectl (tested on v1.37.0)
 - Ubuntu 22.04 LTS (or similar Linux host/VM)
 
