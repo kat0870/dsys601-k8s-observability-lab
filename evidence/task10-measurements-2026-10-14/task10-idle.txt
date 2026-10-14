@@ -1,0 +1,41 @@
+=== DATE ===
+Wed 14 Oct 2026 16:35:48 NZDT
+=== VM MEMORY ===
+               total        used        free      shared  buff/cache   available
+Mem:            10Gi       3.1Gi       166Mi        68Mi       7.7Gi       7.5Gi
+Swap:          923Mi       1.0Mi       921Mi
+=== VM CPUs ===
+4
+=== KIND NODES (docker stats) ===
+NAME                        CPU %     MEM USAGE / LIMIT
+dsys601-lab-control-plane   8.77%     1008MiB / 10.96GiB
+dsys601-lab-worker2         3.67%     996.6MiB / 10.96GiB
+dsys601-lab-worker          2.15%     308.2MiB / 10.96GiB
+=== DISK ===
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        20G   16G  2.9G  85% /
+/dev/sdb         79G  4.7G   70G   7% /mnt/docker-data
+=== DOCKER DISK USE ===
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          5         1         1.541GB   197.9MB (12%)
+Containers      3         3         4.461MB   0B (0%)
+Local Volumes   3         3         4.86GB    0B (0%)
+Build Cache     0         0         0B        0B
+=== MEMORY BY NAMESPACE (MiB) ===
+"namespace":"kube-system"
+"value":[1791948950.512,"737.78125"]
+"namespace":"local-path-storage"
+"value":[1791948950.512,"7.66015625"]
+"namespace":"monitoring"
+"value":[1791948950.512,"732.1328125"]
+"namespace":"demo-app"
+"value":[1791948950.512,"15.19921875"]
+=== CPU BY NAMESPACE (cores) ===
+"namespace":"kube-system"
+"value":[1791948950.519,"0.06656734553021065"]
+"namespace":"local-path-storage"
+"value":[1791948950.519,"0.00008515193430738631"]
+"namespace":"monitoring"
+"value":[1791948950.519,"0.021901174373946796"]
+"namespace":"demo-app"
+"value":[1791948950.519,"0.004442330435583536"]
