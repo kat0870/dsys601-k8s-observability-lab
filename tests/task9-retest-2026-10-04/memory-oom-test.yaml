@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-memory-oom
+  namespace: demo-app
+spec:
+  containers:
+  - name: stress
+    image: polinux/stress
+    command: ["stress"]
+    args: ["--vm", "1", "--vm-bytes", "200M", "--vm-hang", "0"]
+    resources:
+      requests:
+        memory: "64Mi"
+      limits:
+        memory: "128Mi"
