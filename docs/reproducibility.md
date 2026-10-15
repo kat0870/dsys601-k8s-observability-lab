@@ -57,7 +57,6 @@ attempt failed on an empty `grafana:` key in `values.yaml`; this was fixed in co
   The rebuild test verified the pinned builds work.
 - **A Grafana password was committed earlier** (commit `b2842ef`). It was rotated and moved to
   `.env`; the old value no longer works.
-- **Kind scrape-target noise:** control-plane and kube-proxy metrics are only exposed on
-  127.0.0.1 inside Kind nodes, so built-in `TargetDown` / `*InstanceUnreachable` alerts fire
-  on a healthy cluster. Follow-up: expose these metrics in `kind-config.yaml` or disable those
-  targets in `values.yaml`.
+- **Kind scrape targets (fixed in commit `baeddae`):** control-plane and kube-proxy metrics are
+  only exposed on 127.0.0.1 inside Kind nodes, so their scrapes are turned off in `values.yaml`.
+  The built-in `TargetDown` alerts no longer fire on a healthy cluster.
