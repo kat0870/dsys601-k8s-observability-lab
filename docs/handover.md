@@ -77,9 +77,9 @@ The DSYS601 dashboard is called **DSYS601 Workload Health**.
 
 ## Known issues
 
-- Some built-in alerts (`TargetDown`, `KubeProxyInstanceUnreachable` and similar) fire on a
-  healthy cluster, because Kind only exposes some metrics inside its nodes. The DSYS601 alerts
-  are not affected.
+- Kind cannot expose the kube-proxy, scheduler, controller-manager and etcd metrics, so these
+  scrapes are turned off in `monitoring/values.yaml`. This stops false alarms such as
+  `TargetDown` on a healthy cluster.
 
 ## Other documents
 
