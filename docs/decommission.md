@@ -58,6 +58,7 @@ Use this when the lab will no longer be taught on these machines.
    sudo rm -f /etc/systemd/system/user@.service.d/delegate.conf
    sudo systemctl daemon-reload
    sudo rm -f /usr/local/bin/kind /usr/local/bin/kubectl /usr/local/bin/helm
+      sudo rm -f /etc/sysctl.d/99-kind.conf
    sudo apt-get purge -y docker-ce docker-ce-cli containerd.io
    sudo rm -f /etc/apt/sources.list.d/docker.list /etc/apt/keyrings/docker.asc
    ```
