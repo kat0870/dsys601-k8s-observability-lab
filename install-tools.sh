@@ -61,6 +61,15 @@ else
   sudo install -m 0755 kind /usr/local/bin/kind
 fi
 
+# inotify limits (Kind needs more than Ubuntu's default; found in Task 9)
+if [ "$(sysctl -n fs.inotify.max_user_instances)" -lt 512 ]; then
+  printf 'fs.inotify.max_user_watches = 524288\nfs.inotify.max_user_instances = 512\n' | sudo tee /etc/sysctl.d/99-kind.conf > /dev/null
+  sudo sysctl --system > /dev/null
+  echo "Set inotify limits for Kind"
+else
+  echo "OK    inotify limits already set"
+fi
+
 # cgroup delegation (Kind needs this on some Ubuntu VMs; see README "Known issue")
 ctrl=" $(cat /sys/fs/cgroup/user.slice/cgroup.subtree_control 2> /dev/null || true) "
 missing=""
