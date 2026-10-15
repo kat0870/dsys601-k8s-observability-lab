@@ -82,7 +82,7 @@ settings in `monitoring/values.yaml`) into the `monitoring` namespace, then load
 - the alerting rules from `monitoring/alerts/` (a PrometheusRule labelled
   `release=kube-prometheus-stack`, which is the label Prometheus selects rules by).
 
-The script uses `helm install`, so run it on a fresh cluster.
+The script uses `helm upgrade --install`, so it is safe to run again.
 
 Access (run each command in its own terminal tab and leave it open):
 
@@ -91,7 +91,7 @@ kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80    
 kubectl port-forward -n monitoring svc/kube-prometheus-stack-prometheus 9090:9090   # http://localhost:9090
 ```
 
-The Grafana login is set in `monitoring/values.yaml`.
+The Grafana login is user `admin`, with the password from `.env`.
 
 ### Alerting rules
 
@@ -143,6 +143,7 @@ See [docs/handover.md](docs/handover.md) to set up the lab from a blank Ubuntu m
     app/              Demo app (frontend, API, Redis)
     monitoring/       Helm values, setup script, dashboard JSON, alert rules
     tests/            Failure-injection tests (Task 9)
+        labs/             Files used by the DSYS601 student labs (Task 15)
     task11/           Storage tests (Task 11)
     docs/             Handover guide, reproducibility notes, reset procedure
     install-tools.sh  Installs docker, kubectl, helm and kind at pinned versions
