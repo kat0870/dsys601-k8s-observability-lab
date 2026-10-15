@@ -12,7 +12,7 @@ check() {
 
 check "Cluster reachable"                  kubectl cluster-info
 check "3 nodes Ready"                      bash -c '[ "$(kubectl get nodes --no-headers | grep -cw Ready)" -eq 3 ]'
-check "All kube-system pods Running"       bash -c 'out=$(kubectl get pods -n kube-system --no-headers) && [ -n "$out" ] && ! echo "$out" | grep -v Running'
+check "All kube-system pods Running"       bash -c 'out=$(kubectl get pods -n kube-system --no-headers) && [ -n "$out" ] && ! echo "$out" | grep -vE "Running|Completed"'
 check "Demo app deployments available"     kubectl wait -n demo-app --for=condition=Available deploy --all --timeout=180s
 check "Monitoring deployments available"   kubectl wait -n monitoring --for=condition=Available deploy --all --timeout=300s
 check "Prometheus ready"                   kubectl rollout status sts/prometheus-kube-prometheus-stack-prometheus -n monitoring --timeout=300s
