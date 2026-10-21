@@ -1,20 +1,22 @@
+# DSYS601 Lab 1 - a Deployment written as a file.
+# Students copy this to ~/web.yaml, then change replicas and apply it again.
 apiVersion: apps/v1
-kind: Deployment        # make a Deployment
+kind: Deployment          # what kind of thing to make
 metadata:
-  name: web-file        # call it web-file
-  namespace: lab1       # put it in lab1
+  name: web-file          # its name
+  namespace: lab1         # which namespace it goes in
 spec:
-  replicas: 2           # keep 2 pods running
+  replicas: 2             # how many pods to keep running
   selector:
     matchLabels:
-      app: web-file
-  template:
+      app: web-file       # which pods belong to this Deployment
+  template:               # what each pod looks like
     metadata:
       labels:
         app: web-file
     spec:
       containers:
         - name: nginx
-          image: nginx:1.27-alpine
+          image: nginx:1.27-alpine   # the same image you used with kubectl run
           ports:
             - containerPort: 80
