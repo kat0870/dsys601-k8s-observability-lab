@@ -1,0 +1,22 @@
+# DSYS601 Lab 5 - your own alert rule.
+# Copy this file to ~/my-alert.yaml, write your message on the summary line,
+# then load it with: kubectl apply -f ~/my-alert.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: my-demo-app-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack   # Prometheus only loads rules with this label
+spec:
+  groups:
+    - name: my-demo-app.rules
+      rules:
+        - alert: MyDemoAppPodRestarting
+          # Has any demo-app container restarted in the last 5 minutes?
+          expr: increase(kube_pod_container_status_restarts_total{namespace="demo-app"}[5m]) > 0
+          for: 1m              # it must stay true for 1 minute before it fires
+          labels:
+            severity: warning
+          annotations:
+            summary: "WRITE YOUR MESSAGE HERE"
