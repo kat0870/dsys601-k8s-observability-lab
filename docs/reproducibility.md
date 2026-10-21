@@ -10,7 +10,7 @@ from this repository. Nothing is installed "latest"; every version is pinned.
 | Tool versions (kind, kubectl, helm, docker) | exact versions, checked by setup script | `versions.env` |
 | Kind node image | tag + sha256 digest | `versions.env`, `cluster/kind-config.yaml` |
 | kube-prometheus-stack Helm chart | exact chart version | `versions.env` (read by `monitoring/setup-monitoring.sh`) |
-| Demo app and test images | tag + sha256 digest | `app/`, `tests/`, `task11/` |
+| Demo app and test images | tag + sha256 digest | `app/`, `tests/` (including `tests/storage/`) |
 | Dashboards | JSON in git, loaded via ConfigMap | `monitoring/dashboards/` |
 | Alert rules | PrometheusRule YAML in git | `monitoring/alerts/` |
 
