@@ -10,4 +10,4 @@ Run on the DSYS601-fresh-test VM.
 | notready-test.yaml | Readiness probe on a path that does not exist | DSYS601PodNotReady |
 
 These are kept as evidence of the re-test. The maintained lab versions
-(with images pinned by digest) are in the tests/ folder above.
+(with images pinned by digest) are in the `tests/` folder at the repo root.
