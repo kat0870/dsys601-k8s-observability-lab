@@ -3,6 +3,19 @@
 A reproducible, multi-node Kubernetes lab environment (1 control-plane, 2 worker nodes)
 built with Kind, used to develop observability labs for DSYS601.
 
+BCIS309 Industry Project, Ara Institute of Canterbury, Semester 2 2026 by Kabir Thukral.
+Industry Supervisor: Abdul Rehman. Academic Supervisor: Dr Bernard Otinpong. Course Convenor: Dr David Weir.
+
+## Start here
+
+| I want to... | Go to |
+|---|---|
+| Set up the lab on a new Ubuntu VM | [docs/handover.md](docs/handover.md) |
+| Reset or rebuild the lab | [docs/teardown-reset.md](docs/teardown-reset.md) |
+| See what versions are pinned | [docs/reproducibility.md](docs/reproducibility.md) |
+| Run a student lab (Lab 1 to Lab 5) | [labs/](labs/) |
+| Read the project reports and evidence | [project-docs/](project-docs/) |
+
 ## Prerequisites
 
 - Docker (tested on Docker 29.8.1)
@@ -139,18 +152,21 @@ See [docs/handover.md](docs/handover.md) to set up the lab from a blank Ubuntu m
 
 ## Repository structure
 
-    cluster/          Kind cluster config, setup and teardown scripts
-    app/              Demo app (frontend, API, Redis)
-    monitoring/       Helm values, setup script, dashboard JSON, alert rules
-    tests/            Failure-injection tests (Task 9)
-        labs/             Files used by the DSYS601 student labs (Task 15)
-    task11/           Storage tests (Task 11)
-    docs/             Handover guide, reproducibility notes, reset procedure
-    install-tools.sh  Installs docker, kubectl, helm and kind at pinned versions
-    reset-lab.sh      Wipes and rebuilds the lab
-    verify-lab.sh     Health check (11 checks)
-    versions.env      Pinned tool and chart versions
-    .env.example      Template for the Grafana password (.env is not in git)
+| Folder / file | What it holds |
+|---|---|
+| `cluster/` | Kind cluster config, setup and teardown scripts |
+| `app/` | Demo app (frontend, API, Redis) |
+| `monitoring/` | Helm values, setup script, dashboard JSON, alert rules |
+| `labs/` | Files used by the DSYS601 student labs (Task 15) |
+| `tests/` | Failure-injection tests (Task 9) |
+| `tests/storage/` | Storage tests (Task 11) |
+| `docs/` | Handover guide, reproducibility notes, reset and decommission procedures |
+| `project-docs/` | BCIS309 project documents: proposal, progress reports, task evidence reports, halfway report, lab handouts, poster, and raw evidence |
+| `install-tools.sh` | Installs docker, kubectl, helm and kind at pinned versions |
+| `reset-lab.sh` | Wipes and rebuilds the lab |
+| `verify-lab.sh` | Health check (11 checks) |
+| `versions.env` | Pinned tool and chart versions |
+| `.env.example` | Template for the Grafana password (`.env` is not in git) |
 
 ## Rebuilding the lab
 
