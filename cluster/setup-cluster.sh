@@ -37,7 +37,15 @@ kind create cluster --name "$CLUSTER_NAME" --config "$SCRIPT_DIR/kind-config.yam
 #    (downloaded in Lab 0 by labs/preload-images.sh). Saves Docker Hub downloads in class.
 for img in ${LAB1_IMAGES:-}; do
   if docker image inspect "$img" > /dev/null 2>&1; then
-    kind load docker-image "$img" --name "$CLUSTER_NAME" || echo "WARN  could not copy $img into the cluster (it will download instead)"
+    # Save one platform only, then load the file (plain "kind load docker-image"
+    # fails with Docker 29's image store: "content digest not found")
+    tar="$(mktemp --suffix=.tar)"
+    if docker save --platform linux/amd64 -o "$tar" "$img" && kind load image-archive "$tar" --name "$CLUSTER_NAME"; then
+      echo "OK    copied $img into the cluster"
+    else
+      echo "WARN  could not copy $img into the cluster (it will download instead)"
+    fi
+    rm -f "$tar"
   else
     echo "NOTE  $img is not on this VM yet; the cluster will download it when needed"
   fi
