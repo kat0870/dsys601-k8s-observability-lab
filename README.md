@@ -71,13 +71,13 @@ kubectl apply -f app/demo-app.yaml
 kubectl get pods -n demo-app
 ```
 
-This deploys a 3-tier demo app (frontend/nginx, API/go-httpbin, datastore/redis) used
+This deploys a 3-tier demo app (frontend/nginx, API/busybox httpd, datastore/redis) used
 as the observation target for the monitoring stack.
 
 Test it:
 ```bash
 kubectl port-forward -n demo-app svc/frontend 8081:80    # then curl localhost:8081
-kubectl port-forward -n demo-app svc/api 8082:8080        # then curl localhost:8082/get
+kubectl port-forward -n demo-app svc/api 8082:8080        # then curl localhost:8082/cgi-bin/visits
 ```
 
 ## Installing the monitoring stack

@@ -32,4 +32,14 @@ if kind get clusters 2> /dev/null | grep -x "$CLUSTER_NAME" > /dev/null; then
 fi
 
 kind create cluster --name "$CLUSTER_NAME" --config "$SCRIPT_DIR/kind-config.yaml"
+
+# 5. Copy the Lab 1 images into the cluster if they are already on this VM
+#    (downloaded in Lab 0 by labs/preload-images.sh). Saves Docker Hub downloads in class.
+for img in ${LAB1_IMAGES:-}; do
+  if docker image inspect "$img" > /dev/null 2>&1; then
+    kind load docker-image "$img" --name "$CLUSTER_NAME" || echo "WARN  could not copy $img into the cluster (it will download instead)"
+  else
+    echo "NOTE  $img is not on this VM yet; the cluster will download it when needed"
+  fi
+done
 kubectl cluster-info --context "kind-$CLUSTER_NAME"

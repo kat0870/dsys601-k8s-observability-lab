@@ -1,5 +1,5 @@
 #!/bin/bash
-# Task 9 failure-injection test: make one Kind worker report DiskPressure without
+# DSYS601 failure-injection test: make one Kind worker report DiskPressure without
 # filling the disk. Adds a SOFT eviction threshold (nodefs.available < 90%) with a
 # 1 hour grace period, so the kubelet reports DiskPressure but does not evict pods
 # during the test. Expected alert: DSYS601NodeUnderPressure.

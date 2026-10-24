@@ -27,8 +27,13 @@ spec:
       containers:
         - name: redis
           image: redis:7.4-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+          # Save every write to /data, so data survives a container restart (Task 11)
+          args: ["redis-server", "--appendonly", "yes"]
           ports:
             - containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
           resources:
             requests:
               cpu: "50m"
@@ -36,6 +41,10 @@ spec:
             limits:
               cpu: "200m"
               memory: "128Mi"
+      volumes:
+        # emptyDir: kept when the container restarts, removed when the pod is deleted
+        - name: data
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -50,7 +59,33 @@ spec:
       targetPort: 6379
 
 ---
-# ---------- API: httpbin ----------
+# ---------- API: small web API that writes to Redis ----------
+# The API's files. /cgi-bin/visits adds 1 to a "visits" counter in Redis (Task 11).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-files
+  namespace: demo-app
+data:
+  index.html: |
+    DSYS601 demo API
+    /cgi-bin/visits  add 1 to the visit counter in Redis
+    /cgi-bin/uuid    get a random ID
+  visits: |
+    #!/bin/sh
+    # Ask Redis to add 1 to "visits", then close the connection
+    n=$(printf 'INCR visits\r\nQUIT\r\n' | nc redis 6379 | head -n 1 | tr -d ':\r')
+    printf 'Content-Type: application/json\r\n\r\n'
+    if [ -n "$n" ]; then
+      printf '{"visits": %s, "pod": "%s"}\n' "$n" "$(hostname)"
+    else
+      printf '{"error": "cannot reach redis"}\n'
+    fi
+  uuid: |
+    #!/bin/sh
+    printf 'Content-Type: application/json\r\n\r\n'
+    printf '{"uuid": "%s"}\n' "$(cat /proc/sys/kernel/random/uuid)"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -72,9 +107,14 @@ spec:
     spec:
       containers:
         - name: api
-          image: mccutchen/go-httpbin:v2.15.0@sha256:24528cf5229d0b70065ac27e6c9e4d96f5452a84a3ce4433e56573c18d96827a
+          image: busybox:1.36.1@sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662
+          # busybox's built-in web server, on port 8080, serving the files below
+          command: ["httpd", "-f", "-v", "-p", "8080", "-h", "/www"]
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: files
+              mountPath: /www
           resources:
             requests:
               cpu: "50m"
@@ -82,6 +122,18 @@ spec:
             limits:
               cpu: "200m"
               memory: "128Mi"
+      volumes:
+        - name: files
+          configMap:
+            name: api-files
+            defaultMode: 0755
+            items:
+              - key: index.html
+                path: index.html
+              - key: visits
+                path: cgi-bin/visits
+              - key: uuid
+                path: cgi-bin/uuid
 ---
 apiVersion: v1
 kind: Service
